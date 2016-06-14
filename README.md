@@ -1,57 +1,154 @@
-# [Draft.js](https://facebook.github.io/draft-js/) [![Build Status](https://img.shields.io/travis/facebook/draft-js/master.svg?style=flat)](https://travis-ci.org/facebook/draft-js) [![npm version](https://img.shields.io/npm/v/draft-js.svg?style=flat)](https://www.npmjs.com/package/draft-js)
+I use draft-js in my product. I need change it to support some layouts rendering.
+# Decorate multiple blocks 
+![Example of Decorate Multiple Blocks](examples/decorateblocks/result.png)
 
-Draft.js is a JavaScript rich text editor framework, built for React and
-backed by an immutable model.
+##the raw blocks like:
+--------------------
+```javascript
+//refer the wrapper by 'this.props.wrapper' in blockWrapperFn
+wrapper: {
+    topLevel:{
+        render(children, startOffset, endOffset){
+            return <div
+                data-offset-key={startOffset}
+                key="topLevel"
+                style={{
+                    borderLeft: '5px solid #eeeeee',
+                    margin: '5px',
+                    marginRight: '7px',
+                    padding: '10px 15px',
+                    borderWidth: '3px',
+                    borderColor: 'rgb(107, 77, 64)',
+                    borderTopLeftRadius: '50px',
+                    borderBottomRightRadius: '50px',
+                    boxShadow: 'rgb(165, 165, 165) 5px 5px 2px',
+                    backgroundColor: 'rgb(250, 250, 250)',
+                }}>
+                {children}
+            </div>
+        },
+    }
+},
 
-- **Extensible and Customizable:** We provide the building blocks to enable
-the creation of a broad variety of rich text composition experiences, from
-simple text styles to embedded media.
-- **Declarative Rich Text:** Draft.js fits seamlessly into
-[React](http://facebook.github.io/react/) applications,
-abstracting away the details of rendering, selection, and input behavior with a
-familiar declarative API.
-- **Immutable Editor State:** The Draft.js model is built
-with [immutable-js](https://facebook.github.io/immutable-js/), offering
-an API with functional state updates and aggressively leveraging data persistence
-for scalable memory usage.
-
-[Learn how to use Draft.js in your own project.](https://facebook.github.io/draft-js/docs/overview.html)
-
-## Examples
-
-Visit https://facebook.github.io/draft-js/ to try out a simple rich editor example.
-
-The repository includes a variety of different editor examples to demonstrate
-some of the features offered by the framework.
-
-To run the examples, first build Draft.js locally:
-
+blocks:[
+    {
+        type: 'blockquote',
+        text: '读而思',
+        blockStyle: { //you need use blockStyle in blockStyleFn prop of Editor
+            marginTop: '15px',
+            marginBottom: '0px',
+            padding: '0px',
+            lineHeight: '2em',
+            fontSize: '20px',
+            borderColor: 'rgb(107, 77, 64)'
+        },
+        inlineStyleRanges: [{
+            style:{ // you need name the style and map in customStyleMap prop of Editor
+                color: 'rgb(107, 77, 64)',
+                fontSize: '20px',
+            }
+        }],
+        data:{ // the block level metadata
+            wrapKey:"topLevel",
+        }
+    },
+    {
+        type:'header-one',
+        text:'duersi',
+        blockStyle:{
+            fontSize:'1em',
+            fontWeight:'normal',
+            margin:'0px',
+            backgroundColor:'rgb(107, 77, 64)',
+            borderBottomLeftRadius:'20px',
+            borderBottomRightRadius:'20px',
+            marginBottom:'10px',
+            padding:'0px 15px',
+            maxWidth:'24%',
+        },
+        inlineStyleRanges:[{
+            style: {
+                color: 'rgb(224, 209, 202)',
+                fontWeight: 'bold',
+                fontSize: '13px',
+            },
+        }],
+        data:{
+            wrapKey:"topLevel",
+        }
+    },
+    {
+        type:'header-two',
+        text:'编辑完成后，将内容复制粘贴到微信后台素材管理的编辑器中即可',
+        blockStyle:{
+            fontSize:'1em',
+            fontWeight:'normal',
+            margin:'0px',
+            marginTop: '0px',
+            marginBottom: '0px',
+            padding: '0px',
+            lineHeight: '2em',
+            minHeight: '1.5em',
+        },
+        inlineStyleRanges:[
+            {
+                style:{
+                    fontSize: '14px',
+                }
+            }
+        ],
+        data:{
+            wrapKey:"topLevel",
+        }
+    },
+],
 ```
-git clone https://github.com/facebook/draft-js.git
-cd draft-js
-npm install
-npm run build
+
+##the wrapperFn which organize the React elements created by Draft Editor 
+-----------------------------------------------------------------------
+```javascript    
+    //blocks: the ContentBlocks of the editor
+    //offsetKeys: the offset keys to the blocks
+    //elements: React elements to the blocks
+    _blockWrapperFn(blocks, offsetkeys, elements) {
+        const children = [];
+        for(let i =0;i<blocks.length;i++){
+            const block = blocks[i];
+            const wrapName = block.getData().get('wrapKey');
+            if(!wrapName){
+                //a block not need to be decorated
+                children.push({elem:elements[i]});
+            }else{
+                //a block need to be decorated in "wrapName" wrapper
+                let wrapChild = children.find(o=>o.wrapName == wrapName);
+                if(!wrapChild){
+                    wrapChild = {
+                        wrapName:wrapName,
+                        wrapped:[],
+                        startKey:offsetkeys[i],
+                    }                                                                                
+                    //record elements need to be decorated in this wrapper
+                    children.push(wrapChild);
+                }
+                wrapChild.wrapped.push(elements[i]);
+                wrapChild.endKey = offsetkeys[i];
+            }
+        }
+
+        return children.map(c=>{
+            if(c.wrapName){
+                return this.props.wrapper[c.wrapName].render(c.wrapped, c.startKey, c.endKey);
+            }
+            return c.elem;
+        });
+    }
+
+    render() {
+        return <Editor
+                ...
+                blockWrapperFn={this._blockWrapperFn.bind(this)}
+                editorState={this.state.editorState}
+                placeholder="input something..."
+                onChange={this.onChange}/>;
+    }
 ```
-
-then open the example HTML files in your browser.
-
-Draft.js is used in production on Facebook, including status and
-comment inputs, [Notes](https://www.facebook.com/notes/), and
-[messenger.com](https://www.messenger.com).
-
-## Discussion and Support
-
-Join our [Slack team](https://draftjs.herokuapp.com)!
-
-## Contribute
-
-We actively welcome pull requests. Learn how to
-[contribute](https://github.com/facebook/draft-js/blob/master/CONTRIBUTING.md).
-
-## License
-
-Draft.js is [BSD Licensed](https://github.com/facebook/draft-js/blob/master/LICENSE).
-We also provide an additional [patent grant](https://github.com/facebook/draft-js/blob/master/PATENTS).
-
-Examples provided in this repository and in the documentation are separately
-licensed.
