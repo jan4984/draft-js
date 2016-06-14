@@ -279,6 +279,7 @@ class DraftEditor extends React.Component {
               blockRenderMap={this.props.blockRenderMap}
               blockRendererFn={this.props.blockRendererFn}
               blockStyleFn={this.props.blockStyleFn}
+              blockWrapperFn={this.props.blockWrapperFn}
               customStyleMap={
                 {...DefaultDraftInlineStyle, ...this.props.customStyleMap}
               }

@@ -111,6 +111,7 @@ class DraftEditorContents extends React.Component {
     let currentDepth = null;
     let currentWrappedBlocks;
     let block, key, blockType, child, childProps, wrapperTemplate;
+    let offsetKeys=[];
 
     for (let ii = 0; ii < blocksAsArray.length; ii++) {
       block = blocksAsArray[ii];
@@ -215,6 +216,13 @@ class DraftEditorContents extends React.Component {
         currentDepth = null;
         blocks.push(child);
       }
+
+      offsetKeys.push(offsetKey);
+    }
+
+
+    if(this.props.blockWrapperFn){
+      return <div data-contents="true">{this.props.blockWrapperFn(blocksAsArray, offsetKeys, blocks)}</div>;
     }
 
     return <div data-contents="true">{blocks}</div>;
