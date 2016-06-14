@@ -1,4 +1,6 @@
 I use draft-js in my product. I need change it to support some layouts rendering.
+Because the changes only focus to my product and not follow draft-js well, it is may not be merged to `facebook/draft-js` 
+
 # Decorate multiple blocks 
 ![Example of Decorate Multiple Blocks](examples/decorateblocks/result.png)
 
