@@ -1,9 +1,15 @@
 I use draft-js in my product. I need change it to support some layouts rendering.
 Because the changes only focus to my product and not follow draft-js well, it is may not be merged to `facebook/draft-js` 
 
-# Change block style dynamic
+#[Change block style dynamiclly](#f1)
+#[Decorate multiple blocks](#f2)
+
+--------
+
+<a name="f1"/>
+## Change block style dynamiclly
 ![Example of change block style dynamic](examples/dynamicblockstyle/filehelper_1466408484133_90.png)
-##the control object list:
+###the control object list:
 ---
 ```html
 <button onClick={this.onStyleCurrentBlock.bind(this, {bTextAlign:"left"})}>Text Left</button>
@@ -15,7 +21,7 @@ Because the changes only focus to my product and not follow draft-js well, it is
 <button onClick={this.onStyleCurrentBlock.bind(this, {bMarginLeft:"less"})}>&lt;</button>
 ```
 
-##the event handler:
+###the event handler:
 ---
 ```javascript
    onStyleCurrentBlock(control){
@@ -49,11 +55,11 @@ Because the changes only focus to my product and not follow draft-js well, it is
     }
 ```
 
-
-# Decorate multiple blocks 
+<a name="f2"/>
+## Decorate multiple blocks 
 ![Example of Decorate Multiple Blocks](examples/decorateblocks/result.png)
 
-##the raw blocks like:
+###the raw blocks like:
 --------------------
 ```javascript
 //refer the wrapper by 'this.props.wrapper' in blockWrapperFn
@@ -155,7 +161,7 @@ blocks:[
 ],
 ```
 
-##the wrapperFn which organize the React elements created by Draft Editor 
+###the wrapperFn which organize the React elements created by Draft Editor 
 -----------------------------------------------------------------------
 ```javascript    
     //blocks: the ContentBlocks of the editor
