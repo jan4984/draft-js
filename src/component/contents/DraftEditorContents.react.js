@@ -166,21 +166,21 @@ class DraftEditorContents extends React.Component {
           getListItemClasses(blockType, depth, shouldResetCount, direction)
         );
       }*/
-      let{bOrderList, bUnorderList, bTextAlign, bMarginLeft} = block.getData().toObject();
+      let{bListStyle, bTextAlign, bMarginLeft} = block.getData().toObject();
       const Element = (
-          ((bUnorderList||bOrderList)?'li':undefined) ||
+          (bListStyle?'li':undefined) ||
           configForType.element ||
           blockRenderMap.get('unstyled').element
       );
       const dynamicStyle = {}
-      if(bUnorderList){
-        dynamicStyle.listStyleType = 'square';
+      if(bListStyle){
+        dynamicStyle.listStyleType = bListStyle;
       }
       if(bTextAlign){
         dynamicStyle.textAlign = bTextAlign;
       }
       if(bMarginLeft){
-        dynamicStyle.marginLeft = bMarginLeft;
+        dynamicStyle.marginLeft = bMarginLeft+'em';
       }
 
       const Component = CustomComponent || DraftEditorBlock;
