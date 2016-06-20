@@ -126,7 +126,9 @@ class DraftEditorContents extends React.Component {
         customEditable = customRenderer.editable;
       }
 
-      const direction = directionMap.get(key);
+      //const direction = directionMap.get(key);
+      //text align is controlled in block meat data (part of editorstate) now
+      const direction = "NEUTRAL";
       const offsetKey = DraftOffsetKey.encode(key, 0, 0);
       const componentProps = {
         block,
@@ -147,16 +149,12 @@ class DraftEditorContents extends React.Component {
 
       const useNewWrapper = wrapperTemplate !== currentWrapperTemplate;
 
-      const Element = (
-        configForType.element ||
-        blockRenderMap.get('unstyled').element
-      );
-
       const depth = block.getDepth();
       let className = this.props.blockStyleFn(block);
 
       // List items are special snowflakes, since we handle nesting and
       // counters manually.
+      /* it's dynamic now, using block level meta data
       if (Element === 'li') {
         const shouldResetCount = (
           useNewWrapper ||
@@ -167,6 +165,22 @@ class DraftEditorContents extends React.Component {
           className,
           getListItemClasses(blockType, depth, shouldResetCount, direction)
         );
+      }*/
+      let{bOrderList, bUnorderList, bTextAlign, bMarginLeft} = block.getData().toObject();
+      const Element = (
+          ((bUnorderList||bOrderList)?'li':undefined) ||
+          configForType.element ||
+          blockRenderMap.get('unstyled').element
+      );
+      const dynamicStyle = {}
+      if(bUnorderList){
+        dynamicStyle.listStyleType = 'square';
+      }
+      if(bTextAlign){
+        dynamicStyle.textAlign = bTextAlign;
+      }
+      if(bMarginLeft){
+        dynamicStyle.marginLeft = bMarginLeft;
       }
 
       const Component = CustomComponent || DraftEditorBlock;
@@ -175,6 +189,7 @@ class DraftEditorContents extends React.Component {
         'data-block': true,
         'data-editor': this.props.editorKey,
         'data-offset-key': offsetKey,
+        style:dynamicStyle,
         key,
       };
       if (customEditable !== undefined) {
