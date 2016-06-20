@@ -1,6 +1,55 @@
 I use draft-js in my product. I need change it to support some layouts rendering.
 Because the changes only focus to my product and not follow draft-js well, it is may not be merged to `facebook/draft-js` 
 
+# Change block style dynamic
+![Example of change block style dynamic](examples/dynamicblockstyle/filehelper_1466408484133_90.png)
+##the control object list:
+---
+```html
+<button onClick={this.onStyleCurrentBlock.bind(this, {bTextAlign:"left"})}>Text Left</button>
+<button onClick={this.onStyleCurrentBlock.bind(this, {bTextAlign:"center"})}>Text Centre</button>
+<button onClick={this.onStyleCurrentBlock.bind(this, {bTextAlign:"right"})}>Text Right</button>
+<button onClick={this.onStyleCurrentBlock.bind(this, {bListStyle:"decimal"})}>Order List</button>
+<button onClick={this.onStyleCurrentBlock.bind(this, {bListStyle:"square"})}>Unorder List</button>
+<button onClick={this.onStyleCurrentBlock.bind(this, {bMarginLeft:"more"})}>&gt;</button>
+<button onClick={this.onStyleCurrentBlock.bind(this, {bMarginLeft:"less"})}>&lt;</button>
+```
+
+##the event handler:
+---
+```javascript
+   onStyleCurrentBlock(control){
+        const {editorState} = this.state;
+        const contentState = editorState.getCurrentContent();
+        const sel = editorState.getSelection();
+        const key = sel.getStartKey();
+        console.log('block style[',key,']', JSON.stringify(style));
+        const block = contentState.getBlockForKey(key);
+        //if(block.getLength() < 0) return;
+        const blockData = block.getData();
+
+        if(style.bMarginLeft){
+            const newMarginLeft = (
+                (blockData.get('bMarginLeft')||0)
+                + (style.bMarginLeft==='more' ? 2 : -2)
+            );
+            style.bMarginLeft = newMarginLeft;
+        }
+        const newBlockData = blockData.merge(Map(style));
+        if(newBlockData.equals(blockData)){
+            return;
+        }
+        let nextContentState = Modifier.setBlockData(contentState,sel,newBlockData);
+        const newEditState = EditorState.push(
+            editorState,
+            nextContentState,
+            'change-block-style'
+        );
+        this.onChange(newEditState);
+    }
+```
+
+
 # Decorate multiple blocks 
 ![Example of Decorate Multiple Blocks](examples/decorateblocks/result.png)
 
