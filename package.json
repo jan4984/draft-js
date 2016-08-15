@@ -1,7 +1,7 @@
 {
   "name": "draft-js",
   "description": "A React framework for building text editors.",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "keywords": [
     "draftjs",
     "editor",
@@ -23,42 +23,48 @@
     "prepublish": "npm run build",
     "pretest": "node node_modules/fbjs-scripts/node/check-dev-engines.js package.json",
     "build": "gulp",
+    "postbuild": "node node_modules/fbjs-scripts/node/check-lib-requires.js lib",
     "lint": "eslint .",
     "flow": "flow src",
     "test": "NODE_ENV=test jest",
     "test-ci": "NODE_ENV=test npm run lint && npm run flow && npm run test"
   },
   "dependencies": {
-    "fbjs": "^0.8.1",
-    "immutable": "^3.7.4",
-    "jest-cli":"^11.0.2"
+    "fbjs": "^0.8.3",
+    "immutable": "~3.7.4",
+    "object-assign": "^4.1.0",
+    "jest-cli":"11.0.2"
   },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.0.0-rc",
     "react-dom": "^0.14.0 || ^15.0.0-rc"
   },
   "devDependencies": {
-    "babel-core": "^5.8.35",
-    "babel-eslint": "^4.1.3",
+    "babel-core": "^6.8.0",
+    "babel-eslint": "^6.1.2",
+    "babel-preset-fbjs": "^2.0.0",
     "del": "^2.2.0",
     "envify": "^3.4.0",
     "es6-shim": "^0.34.4",
-    "eslint": "^1.5.1",
-    "eslint-plugin-react": "^3.2.2",
-    "fbjs-scripts": "^0.6.0-alpha.1",
-    "flow-bin": "^0.27.0",
+    "eslint": "^3.0.1",
+    "eslint-config-fbjs": "^1.0.0",
+    "eslint-plugin-babel": "^3.3.0",
+    "eslint-plugin-flow-vars": "^0.4.0",
+    "eslint-plugin-react": "^5.2.2",
+    "fbjs-scripts": "^0.7.0",
+    "flow-bin": "^0.28.0",
     "gulp": "^3.9.0",
-    "gulp-babel": "^5.1.0",
+    "gulp-babel": "^6.1.2",
     "gulp-browserify-thin": "^0.1.5",
     "gulp-clean-css": "^2.0.3",
     "gulp-concat-css": "^2.2.0",
     "gulp-derequire": "^2.1.0",
     "gulp-flatten": "^0.2.0",
-    "gulp-header": "^1.7.1",
+    "gulp-header": "1.8.2",
+    "gulp-rename": "^1.2.2",
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.6",
     "jest": "^12.1.1",
-    "object-assign": "^4.0.1",
     "react": "^15.0.0-rc.1",
     "react-dom": "^15.0.0-rc.1",
     "run-sequence": "^1.1.2",
@@ -67,8 +73,8 @@
     "webpack-stream": "^3.0.0"
   },
   "devEngines": {
-    "node": "4.x",
-    "npm": "2.x"
+    "node": "4.x || 6.x",
+    "npm": "2.x || 3.x"
   },
   "jest": {
     "rootDir": "",
@@ -91,6 +97,7 @@
       "<rootDir>/node_modules/fbjs/lib/UserAgentData.js",
       "<rootDir>/node_modules/fbjs-scripts/",
       "<rootDir>/node_modules/immutable/",
+      "<rootDir>/node_modules/object-assign/",
       "<rootDir>/node_modules/react/",
       "<rootDir>/node_modules/react-dom/"
     ]

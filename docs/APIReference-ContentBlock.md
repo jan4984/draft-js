@@ -85,7 +85,7 @@ methods on a single `List` object.
   </li>
   <li>
     <a href="#getdata">
-      <pre>getData(): Map</pre>
+      <pre>getData(): Map<any, any></pre>
     </a>
   </li>
   <li>
@@ -135,7 +135,7 @@ methods on a single `List` object.
   </li>
   <li>
     <a href="#data">
-      <pre>data: Map</pre>
+      <pre>data: Map<any, any></pre>
     </a>
   </li>
 </ul>
@@ -214,9 +214,9 @@ Returns the entity key value (or `null` if none) at a given offset within this
 ### getData()
 
 ```
-getData(): Map
+getData(): Map<any, any>
 ```
-Returns Block level metadata.
+Returns block-level metadata.
 
 ### findStyleRanges()
 

@@ -209,6 +209,12 @@ describe('DraftPasteProcessor', function() {
     expect(output[0].getText()).toBe('hi\nhello');
   });
 
+  it('must strip xml carriages and zero width spaces', function() {
+    var html = 'hi&#13;&#8203;hello';
+    var output = DraftPasteProcessor.processHTML(html, CUSTOM_BLOCK_MAP);
+    expect(output[0].getText()).toBe('hihello');
+  });
+
   it('must split unstyled blocks on two br tags', function() {
     var html = 'hi<br><br>hello';
     var output = DraftPasteProcessor.processHTML(html, CUSTOM_BLOCK_MAP);
@@ -287,8 +293,8 @@ describe('DraftPasteProcessor', function() {
     var output = DraftPasteProcessor.processHTML(html, CUSTOM_BLOCK_MAP);
     assertBlockTypes(output, ['unstyled']);
     assertEntities(
-    output[0],
-    Array(10).fill(false).concat(Array(4).fill(true), Array(6).fill(false))
+      output[0],
+      Array(10).fill(false).concat(Array(4).fill(true), Array(6).fill(false))
     );
     expect(output[0].getText()).toBe('This is a link, yep.');
     var entityId = output[0].getCharacterList().get(12).getEntity();
@@ -301,12 +307,12 @@ describe('DraftPasteProcessor', function() {
     var output = DraftPasteProcessor.processHTML(html, CUSTOM_BLOCK_MAP);
     assertBlockTypes(output, ['unstyled']);
     assertInlineStyles(
-    output[0],
-    Array(2).fill([]).concat(Array(4).fill(['ITALIC']), Array(11).fill([]))
+      output[0],
+      Array(2).fill([]).concat(Array(4).fill(['ITALIC']), Array(11).fill([]))
     );
     assertEntities(
-    output[0],
-    Array(2).fill(false).concat(Array(9).fill(true), Array(6).fill(false))
+      output[0],
+      Array(2).fill(false).concat(Array(9).fill(true), Array(6).fill(false))
     );
     expect(output[0].getText()).toBe('A cool link, yep.');
   });
@@ -317,6 +323,28 @@ describe('DraftPasteProcessor', function() {
     assertBlockTypes(output, ['unstyled']);
     assertEntities(output[0], Array(20).fill(false));
     expect(output[0].getText()).toBe('This is a link, yep.');
+  });
+
+  it('must ignore javascript: links', function() {
+    var html = 'This is a <a href="javascript:void(0)">link</a>, yep.';
+    var output = DraftPasteProcessor.processHTML(html, CUSTOM_BLOCK_MAP);
+    assertBlockTypes(output, ['unstyled']);
+    assertEntities(output[0], Array(20).fill(false));
+    expect(output[0].getText()).toBe('This is a link, yep.');
+  });
+
+  it('must preserve mailto: links', function() {
+    var html = 'This is a <a href="mailto:example@example.com">link</a>, yep.';
+    var output = DraftPasteProcessor.processHTML(html, CUSTOM_BLOCK_MAP);
+    assertBlockTypes(output, ['unstyled']);
+    assertEntities(
+      output[0],
+      Array(10).fill(false).concat(Array(4).fill(true), Array(6).fill(false))
+    );
+    expect(output[0].getText()).toBe('This is a link, yep.');
+    var entityId = output[0].getCharacterList().get(12).getEntity();
+    var entity = DraftEntity.get(entityId);
+    expect(entity.getData().url).toBe('mailto:example@example.com');
   });
 
   it('Tolerate doule BR tags separated by whitespace', function() {
@@ -344,6 +372,54 @@ describe('DraftPasteProcessor', function() {
     var html = '<p>hello</p> <p> what</p>';
     var output = DraftPasteProcessor.processHTML(html, CUSTOM_BLOCK_MAP);
     expect(output[1].getText()).toBe('what');
+  });
+
+  it('Should detect when somthing is un-styled in a child', function() {
+    let html = '<b>hello<span style="font-weight:400;">there</span></b>';
+    let output = DraftPasteProcessor.processHTML(html, CUSTOM_BLOCK_MAP);
+    assertInlineStyles(output[0], [
+      ['BOLD'],
+      ['BOLD'],
+      ['BOLD'],
+      ['BOLD'],
+      ['BOLD'],
+      [],
+      [],
+      [],
+      [],
+      [],
+    ]);
+
+    html = '<i>hello<span style="font-style:normal;">there</span></i>';
+    output = DraftPasteProcessor.processHTML(html, CUSTOM_BLOCK_MAP);
+    assertInlineStyles(output[0], [
+      ['ITALIC'],
+      ['ITALIC'],
+      ['ITALIC'],
+      ['ITALIC'],
+      ['ITALIC'],
+      [],
+      [],
+      [],
+      [],
+      [],
+    ]);
+
+    // nothing to remove. make sure we don't throw an error
+    html = '<span>hello<span style="font-style:normal;">there</span></span>';
+    output = DraftPasteProcessor.processHTML(html, CUSTOM_BLOCK_MAP);
+    assertInlineStyles(output[0], [
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+    ]);
   });
 
   it('must preserve list formatting', function() {

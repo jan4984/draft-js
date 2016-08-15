@@ -13,11 +13,13 @@
 
 'use strict';
 
-import Immutable from 'immutable';
+const Immutable = require('immutable');
 
 import type ContentBlock from 'ContentBlock';
 import type ContentState from 'ContentState';
 import type SelectionState from 'SelectionState';
+
+const {Map} = Immutable;
 
 function modifyBlockForContentState(
   contentState: ContentState,
@@ -31,8 +33,8 @@ function modifyBlockForContentState(
     .toSeq()
     .skipUntil((_, k) => k === startKey)
     .takeUntil((_, k) => k === endKey)
-    .concat(Immutable.Map([[endKey, blockMap.get(endKey)]]))
-      .map(operation);
+    .concat(Map([[endKey, blockMap.get(endKey)]]))
+    .map(operation);
 
   return contentState.merge({
     blockMap: blockMap.merge(newBlocks),

@@ -210,7 +210,7 @@ Set the block type for all selected blocks.
 setBlockData(
   contentState: ContentState,
   selectionState: SelectionState,
-  blockData: Map
+  blockData: Map<any, any>
 ): ContentState
 ```
 Set the block data for all selected blocks.
@@ -221,7 +221,7 @@ Set the block data for all selected blocks.
 mergeBlockData(
   contentState: ContentState,
   selectionState: SelectionState,
-  blockData: Map
+  blockData: Map<any, any>
 ): ContentState
 ```
 Update block data for all selected blocks.

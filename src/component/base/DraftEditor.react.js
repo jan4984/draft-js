@@ -219,7 +219,6 @@ class DraftEditor extends React.Component {
       'DraftEditor/alignRight': textAlignment === 'right',
       'DraftEditor/alignCenter': textAlignment === 'center',
     });
-    const hasContent = this.props.editorState.getCurrentContent().hasText();
 
     const contentStyle = {
       outline: 'none',
@@ -283,6 +282,7 @@ class DraftEditor extends React.Component {
               customStyleMap={
                 {...DefaultDraftInlineStyle, ...this.props.customStyleMap}
               }
+              customStyleFn={this.props.customStyleFn}
               editorKey={this._editorKey}
               editorState={this.props.editorState}
             />

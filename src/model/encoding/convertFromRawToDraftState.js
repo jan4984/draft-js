@@ -43,7 +43,15 @@ function convertFromRawToDraftState(
 
   var contentBlocks = blocks.map(
     block => {
-      var {key, type, text, depth, inlineStyleRanges, entityRanges, data} = block;
+      var {
+        key,
+        type,
+        text,
+        depth,
+        inlineStyleRanges,
+        entityRanges,
+        data,
+      } = block;
       key = key || generateRandomKey();
       depth = depth || 0;
       inlineStyleRanges = inlineStyleRanges || [];

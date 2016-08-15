@@ -83,6 +83,15 @@ style. See
 [Advanced Topics: Inline Styles](/draft-js/docs/advanced-topics-inline-styles.html)
 for details on usage.
 
+#### customStyleFn
+```
+customStyleFn?: (style: DraftInlineStyle) => ?Object
+```
+Optionally define a function to transform inline styles to CSS objects that are applied
+to spans of text. See
+[Advanced Topics: Inline Styles](/draft-js/docs/advanced-topics-inline-styles.html)
+for details on usage.
+
 ### Behavior (Optional)
 
 #### readOnly
@@ -167,7 +176,7 @@ and to convert typed emoticons into images.
 ```
 handlePastedText?: (text: string, html?: string) => boolean
 ```
-Handle text and html(for rich text) that has been pasted directly into the editor.
+Handle text and html(for rich text) that has been pasted directly into the editor. Returning true will prevent the default paste behavior. 
 
 #### handlePastedFiles
 ```
