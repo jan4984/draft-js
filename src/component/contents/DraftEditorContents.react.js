@@ -166,22 +166,7 @@ class DraftEditorContents extends React.Component {
           getListItemClasses(blockType, depth, shouldResetCount, direction)
         );
       }*/
-      let{bListStyle, bTextAlign, bMarginLeft} = block.getData().toObject();
-      const Element = (
-          (bListStyle?'li':undefined) ||
-          configForType.element ||
-          blockRenderMap.get('unstyled').element
-      );
-      const dynamicStyle = {}
-      if(bListStyle){
-        dynamicStyle.listStyleType = bListStyle;
-      }
-      if(bTextAlign){
-        dynamicStyle.textAlign = bTextAlign;
-      }
-      if(bMarginLeft){
-        dynamicStyle.marginLeft = bMarginLeft+'em';
-      }
+      const Element = configForType.element || blockRenderMap.get('unstyled').element;
 
       const Component = CustomComponent || DraftEditorBlock;
       childProps = {
@@ -189,9 +174,11 @@ class DraftEditorContents extends React.Component {
         'data-block': true,
         'data-editor': this.props.editorKey,
         'data-offset-key': offsetKey,
-        style:dynamicStyle,
         key,
       };
+      if(block.getData() && block.getData().get('style')){
+        childProps.style = block.getData().get('style');
+      }
       if (customEditable !== undefined) {
         childProps = {
           ...childProps,
