@@ -179,7 +179,7 @@ class DraftEditorContents extends React.Component {
         key,
       };
       if(block.getData() && block.getData().get('style')){
-        childProps.style = block.getData().get('style');
+        childProps.style = block.getData().get('style').toObject();
       }
       if (customEditable !== undefined) {
         childProps = {
