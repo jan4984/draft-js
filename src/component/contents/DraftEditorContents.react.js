@@ -172,6 +172,7 @@ class DraftEditorContents extends React.Component {
 
       const Component = CustomComponent || DraftEditorBlock;
       childProps = {
+        style:{},
         className,
         'data-block': true,
         'data-editor': this.props.editorKey,
@@ -180,6 +181,8 @@ class DraftEditorContents extends React.Component {
       };
       if(block.getData() && block.getData().get('style')){
         childProps.style = block.getData().get('style').toObject();
+      }else{
+        delete childProps.style;
       }
       if (customEditable !== undefined) {
         childProps = {
