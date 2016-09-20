@@ -179,10 +179,20 @@ class DraftEditorContents extends React.Component {
         'data-offset-key': offsetKey,
         key,
       };
-      if(block.getData() && block.getData().get('style')){
-        childProps.style = block.getData().get('style').toObject();
-      }else{
-        delete childProps.style;
+      const blockData = block.getData();
+      if(blockData){
+        if(blockData.get('style')){
+          if(blockData.get('overrideStyle')){
+            childProps.style = blockData.get('style').merge(blockData.get('overrideStyle')).toObject();
+          }else {
+            childProps.style = blockData.get('style').toObject();
+          }
+        }else{
+          if(blockData.get('overrideStyle')){
+            childProps.style = blockData.get('overrideStyle').toObject();
+          }
+        }
+
       }
       if (customEditable !== undefined) {
         childProps = {
