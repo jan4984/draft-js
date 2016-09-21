@@ -106,18 +106,20 @@ class DraftEditorContents extends React.Component {
     const directionMap = nullthrows(editorState.getDirectionMap());
 
     const blocksAsArray = content.getBlocksAsArray();
-    const blocks = [];
-    let currentWrapperElement = null;
-    let currentWrapperTemplate = null;
+    const processedBlocks = [];
     let currentDepth = null;
+
     let currentWrappedBlocks;
     let block, key, blockType, child, childProps, wrapperTemplate;
     let offsetKeys=[];
 
+    let lastWrapperTemplate = null;
+
+
     for (let ii = 0; ii < blocksAsArray.length; ii++) {
-      block = blocksAsArray[ii];
-      key = block.getKey();
-      blockType = block.getType();
+      const block = blocksAsArray[ii];
+      const key = block.getKey();
+      const blockType = block.getType();
 
       const customRenderer = blockRendererFn(block);
       let CustomComponent, customProps, customEditable;
@@ -132,6 +134,7 @@ class DraftEditorContents extends React.Component {
       const direction = "NEUTRAL";
       const offsetKey = DraftOffsetKey.encode(key, 0, 0);
       const componentProps = {
+        contentState: content,
         block,
         blockProps: customProps,
         customStyleMap,
@@ -146,10 +149,7 @@ class DraftEditorContents extends React.Component {
       };
 
       const configForType = blockRenderMap.get(blockType);
-
-      wrapperTemplate = configForType.wrapper;
-
-      const useNewWrapper = wrapperTemplate !== currentWrapperTemplate;
+      const wrapperTemplate = configForType.wrapper;
 
       const depth = block.getDepth();
       let className = this.props.blockStyleFn(block);
@@ -159,7 +159,7 @@ class DraftEditorContents extends React.Component {
       /* it's dynamic now, using block level meta data
       if (Element === 'li') {
         const shouldResetCount = (
-          useNewWrapper ||
+          lastWrapperTemplate !== wrapperTemplate ||
           currentDepth === null ||
           depth > currentDepth
         );
@@ -169,12 +169,12 @@ class DraftEditorContents extends React.Component {
         );
       }*/
       const blockData = block.getData();
-      const Element = (blockData.get('overrideStyle') && blockData.get('overrideStyle').has('listStyle'))
+      const Element = (blockData && blockData.get('overrideStyle') && blockData.get('overrideStyle').has('listStyle'))
           ? 'li'
           : (configForType.element || blockRenderMap.get('unstyled').element);
 
       const Component = CustomComponent || DraftEditorBlock;
-      childProps = {
+      let childProps = {
         style:{},
         className,
         'data-block': true,
@@ -204,45 +204,69 @@ class DraftEditorContents extends React.Component {
         };
       }
 
-      child = React.createElement(
+      const child = React.createElement(
         Element,
         childProps,
         <Component {...componentProps} />,
       );
 
+      processedBlocks.push({
+        block: child,
+        wrapperTemplate,
+        key,
+        offsetKey,
+      });
+
       if (wrapperTemplate) {
-        if (useNewWrapper) {
-          currentWrappedBlocks = [];
-          currentWrapperElement = React.cloneElement(
-            wrapperTemplate,
-            {
-              key: key + '-wrap',
-              'data-offset-key': offsetKey,
-            },
-            currentWrappedBlocks
-          );
-          currentWrapperTemplate = wrapperTemplate;
-          blocks.push(currentWrapperElement);
-        }
         currentDepth = block.getDepth();
-        nullthrows(currentWrappedBlocks).push(child);
       } else {
-        currentWrappedBlocks = null;
-        currentWrapperElement = null;
-        currentWrapperTemplate = null;
         currentDepth = null;
-        blocks.push(child);
+      }
+      lastWrapperTemplate = wrapperTemplate;
+    }
+
+    /*
+     * jan4984:WE NOT USE STATIC WRAPPER element, but dynamic wrapper function blockWrapperFn.
+     * also, we not want `contiguous runs of blocks that have the same wrapperTemplate`, because user
+     * may add a group of block after another with same wrapperTemplate
+     */
+
+    // Group contiguous runs of blocks that have the same wrapperTemplate
+    const outputBlocks = [];
+    for (let ii = 0; ii < processedBlocks.length; ) {
+      const info = processedBlocks[ii];
+      if (info.wrapperTemplate) {
+        const blocks = [];
+        do {
+          blocks.push(processedBlocks[ii].block);
+          ii++;
+        } while (
+          ii < processedBlocks.length &&
+          processedBlocks[ii].wrapperTemplate === info.wrapperTemplate
+        );
+        const wrapperElement = React.cloneElement(
+          info.wrapperTemplate,
+          {
+            key: info.key + '-wrap',
+            'data-offset-key': info.offsetKey,
+          },
+          blocks
+        );
+        outputBlocks.push(wrapperElement);
+      } else {
+        outputBlocks.push(info.block);
+        ii++;
       }
 
-      offsetKeys.push(offsetKey);
+      offsetKeys.push(info.offsetKey);
     }
 
 
     if(this.props.blockWrapperFn){
-      return <div data-contents="true">{this.props.blockWrapperFn(blocksAsArray, offsetKeys, blocks)}</div>;
+      return <div data-contents="true">{this.props.blockWrapperFn(blocksAsArray, offsetKeys, outputBlocks)}</div>;
     }
 
-    return <div data-contents="true">{blocks}</div>;
+    return <div data-contents="true">{outputBlocks}</div>;
   }
 }
 

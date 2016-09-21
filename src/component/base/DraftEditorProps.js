@@ -22,29 +22,6 @@ import type {DraftHandleValue} from 'DraftHandleValue';
 import type EditorState from 'EditorState';
 import type SelectionState from 'SelectionState';
 
-declare function bfn(block: ContentBlock) :?Object;
-declare function nfn(n:number) : string;
-declare function efn(e:SyntheticKeyboardEvent) :?string;
-declare function hrn(e: SyntheticKeyboardEvent) :DraftHandleValue;
-declare function dec(command: DraftEditorCommand) : DraftHandleValue;
-declare function hbi(chars: string) :DraftHandleValue;
-declare function pah(text: string, html?: string) : DraftHandleValue;
-declare function pfh(files: Array<Blob>) : DraftHandleValue;
-declare function skevh(e: SyntheticKeyboardEvent):void;
-declare function seh(e: SyntheticKeyboardEvent):void;
-declare function csf(style: DraftInlineStyle):?Object;
-declare function bw(blocks:Array<ContentBlock>, offsets:Array<string>, elements:Array<Object>):Array<Object>;
-declare function gfh(
-    selection: SelectionState,
-    files: Array<Blob>
-): DraftHandleValue;
-
-    // Handle other drops to prevent default text movement/insertion behaviour
-declare function gh(
-        selection: SelectionState,
-        dataTransfer: Object,
-        isInternal: DraftDragType
-    ) :DraftHandleValue;
 export type DraftEditorProps = {
   /**
    * The two most critical props are `editorState` and `onChange`.
@@ -58,7 +35,7 @@ export type DraftEditorProps = {
    */
   editorState: EditorState,
   onChange: (editorState: EditorState) => void,
-  blockWrapperFn?:bw,
+
   placeholder?: string,
 
   // Specify whether text alignment should be forced in a direction
@@ -68,15 +45,16 @@ export type DraftEditorProps = {
   // For a given `ContentBlock` object, return an object that specifies
   // a custom block component and/or props. If no object is returned,
   // the default `TextEditorBlock` is used.
-  blockRendererFn?: bfn,
+  blockRendererFn?: (block: ContentBlock) => ?Object,
 
   // Function that returns a cx map corresponding to block-level styles.
-  blockStyleFn?: nfn,
+  blockStyleFn?: (type: number) => string,
+  blockWrapperFn?:(blocks:Array<ContentBlock>, offsetkeys:Array<string>, elements:Array<React$Element<*>>)=>Array<React$Element<*>>,
 
   // A function that accepts a synthetic key event and returns
   // the matching DraftEditorCommand constant, or null if no command should
   // be invoked.
-  keyBindingFn?: efn,
+  keyBindingFn?: (e: SyntheticKeyboardEvent) => ?string,
 
   // Set whether the `DraftEditor` component should be editable. Useful for
   // temporarily disabling edit behavior or allowing `DraftEditor` rendering
@@ -109,42 +87,48 @@ export type DraftEditorProps = {
    * that returns `handled` will be the last handler to execute for that event.
    */
 
-
   // Useful for managing special behavior for pressing the `Return` key. E.g.
   // removing the style from an empty list item.
-  handleReturn?: hrn,
+  handleReturn?: (e: SyntheticKeyboardEvent) => DraftHandleValue,
 
   // Map a key command string provided by your key binding function to a
   // specified behavior.
-  handleKeyCommand?:dec,
+  handleKeyCommand?: (command: DraftEditorCommand) => DraftHandleValue,
 
   // Handle intended text insertion before the insertion occurs. This may be
   // useful in cases where the user has entered characters that you would like
   // to trigger some special behavior. E.g. immediately converting `:)` to an
   // emoji Unicode character, or replacing ASCII quote characters with smart
   // quotes.
-  handleBeforeInput?:hbi,
+  handleBeforeInput?: (chars: string) => DraftHandleValue,
 
-  handlePastedText?: pah,
+  handlePastedText?: (text: string, html?: string) => DraftHandleValue,
 
-  handlePastedFiles?:pfh,
+  handlePastedFiles?: (files: Array<Blob>) => DraftHandleValue,
 
   // Handle dropped files
-  handleDroppedFiles?:gfh,
+  handleDroppedFiles?: (
+    selection: SelectionState,
+    files: Array<Blob>
+  ) => DraftHandleValue,
 
   // Handle other drops to prevent default text movement/insertion behaviour
-  handleDrop?: gh,
+  handleDrop?: (
+    selection: SelectionState,
+    dataTransfer: Object,
+    isInternal: DraftDragType
+  ) => DraftHandleValue,
 
   /**
    * Non-cancelable event triggers.
    */
-  onEscape?: skevh,
-  onTab?: skevh,
-  onUpArrow?: skevh,
-  onDownArrow?: skevh,
+  onEscape?: (e: SyntheticKeyboardEvent) => void,
+  onTab?: (e: SyntheticKeyboardEvent) => void,
+  onUpArrow?: (e: SyntheticKeyboardEvent) => void,
+  onDownArrow?: (e: SyntheticKeyboardEvent) => void,
 
-  onBlur?: seh,
-  onFocus?: seh,
+  onBlur?: (e: SyntheticEvent) => void,
+  onFocus?: (e: SyntheticEvent) => void,
 
   // Provide a map of inline style names corresponding to CSS style objects
   // that will be rendered for matching ranges.
@@ -152,7 +136,7 @@ export type DraftEditorProps = {
 
   // Provide a function that will construct CSS style objects given inline
   // style names.
-  customStyleFn?: csf,
+  customStyleFn?: (style: DraftInlineStyle) => ?Object,
 
   // Provide a map of block rendering configurations. Each block type maps to
   // an element tag and an optional react element wrapper. This configuration
