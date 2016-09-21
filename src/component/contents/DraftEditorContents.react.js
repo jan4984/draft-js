@@ -168,7 +168,10 @@ class DraftEditorContents extends React.Component {
           getListItemClasses(blockType, depth, shouldResetCount, direction)
         );
       }*/
-      const Element = configForType.element || blockRenderMap.get('unstyled').element;
+      const blockData = block.getData();
+      const Element = (blockData.get('overrideStyle') && blockData.get('overrideStyle').has('listStyle'))
+          ? 'li'
+          : (configForType.element || blockRenderMap.get('unstyled').element);
 
       const Component = CustomComponent || DraftEditorBlock;
       childProps = {
@@ -179,7 +182,7 @@ class DraftEditorContents extends React.Component {
         'data-offset-key': offsetKey,
         key,
       };
-      const blockData = block.getData();
+
       if(blockData){
         if(blockData.get('style')){
           if(blockData.get('overrideStyle')){
@@ -192,7 +195,6 @@ class DraftEditorContents extends React.Component {
             childProps.style = blockData.get('overrideStyle').toObject();
           }
         }
-
       }
       if (customEditable !== undefined) {
         childProps = {
