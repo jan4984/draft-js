@@ -17,6 +17,7 @@ const DraftEditorBlock = require('DraftEditorBlock.react');
 const DraftOffsetKey = require('DraftOffsetKey');
 const EditorState = require('EditorState');
 const React = require('React');
+const ReactDOM = require('ReactDOM');
 
 const cx = require('cx');
 const joinClasses = require('joinClasses');
@@ -169,20 +170,31 @@ class DraftEditorContents extends React.Component {
         );
       }*/
       const blockData = block.getData();
-      const Element = (blockData && blockData.get('overrideStyle') && blockData.get('overrideStyle').has('listStyle'))
+      const isList = blockData && blockData.get('overrideStyle') && blockData.get('overrideStyle').has('listStyle');
+      const isCheckList = isList && blockData.get('overrideStyle').get('listStyle').startsWith('url');
+      const Element = isList
           ? 'li'
           : (configForType.element || blockRenderMap.get('unstyled').element);
-
       const Component = CustomComponent || DraftEditorBlock;
-      let childProps = {
-        style:{},
+      let childProps :{
+        style?:Object,
+        onClickCapture?:(e:SyntheticEvent)=>void,
+        className:string,
+        'data-block':boolean,
+        ref?:string,
+        'data-editor':string,
+        'data-offset-key':string,
+      } = {
         className,
         'data-block': true,
         'data-editor': this.props.editorKey,
         'data-offset-key': offsetKey,
         key,
       };
-
+      if(isCheckList && this.props.checkListClickedFn){
+        childProps.ref = 'li'+ii;
+        childProps.onClickCapture = this.onCheckListClicked.bind({block, THIS:this, ref:'li'+ii});
+      }
       if(blockData){
         if(blockData.get('style')){
           if(blockData.get('overrideStyle')){
@@ -267,6 +279,18 @@ class DraftEditorContents extends React.Component {
     }
 
     return <div data-contents="true">{outputBlocks}</div>;
+  }
+
+  onCheckListClicked(e:SyntheticEvent):void{
+    const li = this.THIS.refs[this.ref];
+    if(li && li.children[0] && li.children[0].children[0]){
+      const childStartAt = ReactDOM.findDOMNode(li.children[0].children[0]).offsetLeft;
+      if(e.pageX < childStartAt) {
+        this.THIS.props.checkListClickedFn(this.block, e);
+      }
+    }else{
+      this.THIS.props.checkListClickedFn(this.block, e);
+    }
   }
 }
 

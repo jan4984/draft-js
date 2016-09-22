@@ -276,6 +276,7 @@ class DraftEditor extends React.Component {
             tabIndex={this.props.tabIndex}>
             <DraftEditorContents
               blockRenderMap={this.props.blockRenderMap}
+              checkListClickedFn={this.props.checkListClickedFn}
               blockRendererFn={this.props.blockRendererFn}
               blockStyleFn={this.props.blockStyleFn}
               blockWrapperFn={this.props.blockWrapperFn}

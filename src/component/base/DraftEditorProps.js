@@ -50,6 +50,7 @@ export type DraftEditorProps = {
   // Function that returns a cx map corresponding to block-level styles.
   blockStyleFn?: (type: number) => string,
   blockWrapperFn?:(blocks:Array<ContentBlock>, offsetkeys:Array<string>, elements:Array<React$Element<*>>)=>Array<React$Element<*>>,
+  checkListClickedFn?:(block:ContentBlock, e:SyntheticEvent)=>void,
 
   // A function that accepts a synthetic key event and returns
   // the matching DraftEditorCommand constant, or null if no command should
