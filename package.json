@@ -32,8 +32,7 @@
   "dependencies": {
     "fbjs": "^0.8.3",
     "immutable": "~3.7.4",
-    "object-assign": "^4.1.0",
-    "jest-cli":"11.0.2"
+    "object-assign": "^4.1.0"
   },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.0.0-rc",

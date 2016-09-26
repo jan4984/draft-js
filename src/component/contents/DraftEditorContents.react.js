@@ -178,7 +178,7 @@ class DraftEditorContents extends React.Component {
       const Component = CustomComponent || DraftEditorBlock;
       let childProps :{
         style?:Object,
-        onClickCapture?:(e:SyntheticEvent)=>void,
+        onClickCapture?:(t:checkListClickBinder, e: SyntheticMouseEvent)=>void;
         className:string,
         'data-block':boolean,
         ref?:string,
@@ -193,7 +193,7 @@ class DraftEditorContents extends React.Component {
       };
       if(isCheckList && this.props.checkListClickedFn){
         childProps.ref = 'li'+ii;
-        childProps.onClickCapture = this.onCheckListClicked.bind({block, THIS:this, ref:'li'+ii});
+        childProps.onClickCapture = onCheckListClicked.bind({block, THIS:this, ref:'li'+ii});
       }
       if(blockData){
         if(blockData.get('style')){
@@ -280,17 +280,22 @@ class DraftEditorContents extends React.Component {
 
     return <div data-contents="true">{outputBlocks}</div>;
   }
+}
 
-  onCheckListClicked(e:SyntheticEvent):void{
-    const li = this.THIS.refs[this.ref];
-    if(li && li.children[0] && li.children[0].children[0]){
-      const childStartAt = ReactDOM.findDOMNode(li.children[0].children[0]).offsetLeft;
-      if(e.pageX < childStartAt) {
-        this.THIS.props.checkListClickedFn(this.block, e);
-      }
-    }else{
+class checkListClickBinder{
+  ref:string;
+  THIS:DraftEditorContents;
+  block:ContentBlock;
+}
+function onCheckListClicked(THIS:checkListClickBinder, e: SyntheticMouseEvent): void {
+  const li = this.THIS.refs[this.ref];
+  if (li && li.children[0] && li.children[0].children[0]) {
+    const childStartAt = ReactDOM.findDOMNode(li.children[0].children[0]).offsetLeft;
+    if (e.pageX < childStartAt) {
       this.THIS.props.checkListClickedFn(this.block, e);
     }
+  } else {
+    this.THIS.props.checkListClickedFn(this.block, e);
   }
 }
 
