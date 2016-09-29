@@ -287,7 +287,7 @@ class checkListClickBinder{
   THIS:DraftEditorContents;
   block:ContentBlock;
 }
-function onCheckListClicked(THIS:checkListClickBinder, e: SyntheticMouseEvent): void {
+function onCheckListClicked(e: SyntheticMouseEvent): void {
   const li = this.THIS.refs[this.ref];
   if (li && li.children[0] && li.children[0].children[0]) {
     const childStartAt = ReactDOM.findDOMNode(li.children[0].children[0]).offsetLeft;
