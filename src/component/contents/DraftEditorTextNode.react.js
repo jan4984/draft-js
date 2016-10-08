@@ -49,6 +49,7 @@ const NEWLINE_B = useNewlineChar ?
 
 type Props = {
   children: string,
+  selClass: string,
 };
 
 /**
@@ -72,7 +73,10 @@ class DraftEditorTextNode extends React.Component {
     if (shouldBeNewline) {
       return !isNewline(node);
     }
-    return node.textContent !== nextProps.children;
+    return( 
+    	node.textContent !== nextProps.children ||
+        node.className !== nextProps.selClass
+  	);
   }
 
   componentWillUpdate(): void {
@@ -86,8 +90,8 @@ class DraftEditorTextNode extends React.Component {
       return this._forceFlag ? NEWLINE_A : NEWLINE_B;
     }
     return (
-      <span key={this._forceFlag ? 'A' : 'B'} data-text="true">
-        {this.props.children}
+      <span className={this.props.selClass} key={this._forceFlag ? 'A' : 'B'} data-text="true" >
+          {this.props.children}
       </span>
     );
   }
