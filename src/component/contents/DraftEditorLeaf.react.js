@@ -154,12 +154,13 @@ class DraftEditorLeaf extends React.Component {
       styleObj = Object.assign(styleObj, newStyles);
     }
 
+    let selClass = "span_"+((styleObj.color || "#FFFFFF").substr(1))
     return (
       <span
         data-offset-key={offsetKey}
         ref="leaf"
         style={styleObj}>
-        <DraftEditorTextNode>{text}</DraftEditorTextNode>
+        <DraftEditorTextNode selClass={selClass}>{text}</DraftEditorTextNode>
       </span>
     );
   }
