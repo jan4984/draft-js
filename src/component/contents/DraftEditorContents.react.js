@@ -32,6 +32,23 @@ type Props = {
   editorState: EditorState,
 };
 
+type CheckListClickBinder = {
+  ref: string;
+  THIS: DraftEditorContents;
+  block: ContentBlock;
+}
+function onCheckListClicked(e: SyntheticMouseEvent):void {
+  const li = this.THIS.refs[this.ref];
+  if (li && li.children[0] && li.children[0].children[0]) {
+    const childStartAt = ReactDOM.findDOMNode(li.children[0].children[0]).offsetLeft;
+    if (e.pageX < childStartAt) {
+      this.THIS.props.checkListClickedFn(this.block, e);
+    }
+  } else {
+    this.THIS.props.checkListClickedFn(this.block, e);
+  }
+}
+
 /**
  * `DraftEditorContents` is the container component for all block components
  * rendered for a `DraftEditor`. It is optimized to aggressively avoid
@@ -178,7 +195,7 @@ class DraftEditorContents extends React.Component {
       const Component = CustomComponent || DraftEditorBlock;
       let childProps :{
         style?:Object,
-        onClickCapture?:(t:checkListClickBinder, e: SyntheticMouseEvent)=>void;
+        onClickCapture?:(e: SyntheticMouseEvent)=>void;
         className:string,
         'data-block':boolean,
         ref?:string,
@@ -193,7 +210,8 @@ class DraftEditorContents extends React.Component {
       };
       if(isCheckList && this.props.checkListClickedFn){
         childProps.ref = 'li'+ii;
-        childProps.onClickCapture = onCheckListClicked.bind({block, THIS:this, ref:'li'+ii});
+        const binder:CheckListClickBinder = {block, THIS:this, ref:'li'+ii}
+        childProps.onClickCapture = onCheckListClicked.bind(binder);
       }
       if(blockData){
         if(blockData.get('style')){
@@ -281,24 +299,6 @@ class DraftEditorContents extends React.Component {
     return <div data-contents="true">{outputBlocks}</div>;
   }
 }
-
-class checkListClickBinder{
-  ref:string;
-  THIS:DraftEditorContents;
-  block:ContentBlock;
-}
-function onCheckListClicked(e: SyntheticMouseEvent): void {
-  const li = this.THIS.refs[this.ref];
-  if (li && li.children[0] && li.children[0].children[0]) {
-    const childStartAt = ReactDOM.findDOMNode(li.children[0].children[0]).offsetLeft;
-    if (e.pageX < childStartAt) {
-      this.THIS.props.checkListClickedFn(this.block, e);
-    }
-  } else {
-    this.THIS.props.checkListClickedFn(this.block, e);
-  }
-}
-
 /**
  * Provide default styling for list items. This way, lists will be styled with
  * proper counters and indentation even if the caller does not specify
