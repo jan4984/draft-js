@@ -210,7 +210,7 @@ function getPointForNonTextNode(
  * render newlines instead of break tags.
  */
 function getTextContentLength(node: Node): number {
-  var textContent = node.textContent;
+  var textContent = node.textContent || (node instanceof Element && node.getAttribute('data-fake-text')) || "";
   return textContent === '\n' ? 0 : textContent.length;
 }
 
