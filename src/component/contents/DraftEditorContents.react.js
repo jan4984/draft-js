@@ -193,6 +193,7 @@ class DraftEditorContents extends React.Component {
           ? 'li'
           : (configForType.element || blockRenderMap.get('unstyled').element);
       const Component = CustomComponent || DraftEditorBlock;
+      const newClassName=(blockType!='atomic'?'public-DraftEditor-ContentExceptForAtomic':'')
       let childProps :{
         style?:Object,
         onClickCapture?:(e: SyntheticMouseEvent)=>void;
@@ -202,7 +203,7 @@ class DraftEditorContents extends React.Component {
         'data-editor':string,
         'data-offset-key':string,
       } = {
-        className,
+        className:newClassName,
         'data-block': true,
         'data-editor': this.props.editorKey,
         'data-offset-key': offsetKey,
