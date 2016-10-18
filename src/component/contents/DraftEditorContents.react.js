@@ -294,10 +294,10 @@ class DraftEditorContents extends React.Component {
 
 
     if(this.props.blockWrapperFn){
-      return <div data-contents="true">{this.props.blockWrapperFn(blocksAsArray, offsetKeys, outputBlocks)}</div>;
+      return <div data-contents="true" style={{paddingTop:'12px'}}>{this.props.blockWrapperFn(blocksAsArray, offsetKeys, outputBlocks)}</div>;
     }
 
-    return <div data-contents="true">{outputBlocks}</div>;
+    return <div data-contents="true" style={{paddingTop:'12px'}}>{outputBlocks}</div>;
   }
 }
 /**
