@@ -193,7 +193,7 @@ class DraftEditorContents extends React.Component {
           ? 'li'
           : (configForType.element || blockRenderMap.get('unstyled').element);
       const Component = CustomComponent || DraftEditorBlock;
-      const newClassName=(blockType!='atomic'?'public-DraftEditor-ContentExceptForAtomic':'')
+      const newClassName=(blockType!='atomic'?cx('public/DraftEditor/ContentExceptForAtomic'):'')
       let childProps :{
         style?:Object,
         onClickCapture?:(e: SyntheticMouseEvent)=>void;
