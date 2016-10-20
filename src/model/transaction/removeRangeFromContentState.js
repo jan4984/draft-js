@@ -17,7 +17,7 @@ var Immutable = require('immutable');
 import type CharacterMetadata from 'CharacterMetadata';
 import type ContentState from 'ContentState';
 import type {List} from 'immutable';
-import type SelectionState from 'SelectionState';
+import SelectionState from 'SelectionState';
 
 function removeRangeFromContentState(
   contentState: ContentState,
@@ -36,8 +36,13 @@ function removeRangeFromContentState(
   var startBlock = blockMap.get(startKey);
   var endBlock = blockMap.get(endKey);
   var characterList;
+  var removeWholeAtomicBlock = false;
 
   if (startBlock === endBlock) {
+    if(startBlock.getType() === 'atomic' && endOffset > startOffset){
+      //atomic only have 1 length text
+      removeWholeAtomicBlock = true;
+    }
     characterList = removeFromList(
       startBlock.getCharacterList(),
       startOffset,
@@ -50,12 +55,14 @@ function removeRangeFromContentState(
       .concat(endBlock.getCharacterList().slice(endOffset));
   }
 
-  var modifiedStart = startBlock.merge({
-    text: (
-      startBlock.getText().slice(0, startOffset) +
-      endBlock.getText().slice(endOffset)
-    ),
-    characterList,
+  var modifiedStart = removeWholeAtomicBlock
+      ?null
+      :startBlock.merge({
+        text: (
+          startBlock.getText().slice(0, startOffset) +
+          endBlock.getText().slice(endOffset)
+        ),
+        characterList,
   });
 
   var newBlocks = blockMap
@@ -64,19 +71,35 @@ function removeRangeFromContentState(
     .takeUntil((_, k) => k === endKey)
     .concat(Immutable.Map([[endKey, null]]))
     .map((_, k) => { return k === startKey ? modifiedStart : null; });
-
+  var selectionAfter = selectionState.merge({
+    anchorKey: startKey,
+    anchorOffset: startOffset,
+    focusKey: startKey,
+    focusOffset: startOffset,
+    isBackward: false,
+  });
+  if(removeWholeAtomicBlock){
+    var beforeBlock = blockMap
+        .reverse()
+        .skipUntil((_, k) => k === startKey)
+        .skip(1)
+        .skipUntil(b=>b.getType() != 'atomic')
+        .first();
+    if(beforeBlock){
+      selectionAfter = SelectionState.createEmpty(beforeBlock.getKey()).merge({
+        isBackward:false,
+        focusOffset:beforeBlock.getText().length,
+        anchorOffset:beforeBlock.getText().length,
+      });
+    }else{
+      selectionAfter = SelectionState.createEmpty(blockMap.first());
+    }
+  }
   blockMap = blockMap.merge(newBlocks).filter(block => !!block);
-
   return contentState.merge({
     blockMap,
-    selectionBefore: selectionState,
-    selectionAfter: selectionState.merge({
-      anchorKey: startKey,
-      anchorOffset: startOffset,
-      focusKey: startKey,
-      focusOffset: startOffset,
-      isBackward: false,
-    }),
+    selectionBefore:selectionState,
+    selectionAfter,
   });
 }
 

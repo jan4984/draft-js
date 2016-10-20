@@ -55,16 +55,36 @@ function editOnCut(e: SyntheticClipboardEvent): void {
     this.restoreEditorDOM({x, y});
     this.removeRenderGuard();
     this.exitCurrentMode();
-    this.update(removeFragment(editorState));
+    var afterRemove = removeFragment(editorState);
+    var selectionState = afterRemove.getCurrentContent().getSelectionAfter();
+    var afterSel = EditorState.forceSelection(afterRemove, selectionState)
+    this.update(afterSel);
+    //this.update(removeFragment(editorState));
+    //why we need forceSelection, or select not right after remove
   }, 0);
 }
 
 function removeFragment(editorState: EditorState): EditorState {
+  var contentState = editorState.getCurrentContent();
+  var selectionState = editorState.getSelection();
+  var startKey = selectionState.getStartKey();
+  var block = contentState.getBlockBefore(startKey);
+  var selectCanNotUndo = false;
+  if( block
+      && startKey == selectionState.getEndKey()
+      && selectionState.getStartOffset() != selectionState.getEndOffset()
+      && contentState.getBlockForKey(startKey).getType()==='atomic')
+  {
+    selectCanNotUndo = true;
+  }
   const newContent = DraftModifier.removeRange(
-    editorState.getCurrentContent(),
+    contentState,
     editorState.getSelection(),
     'forward'
   );
+  if(selectCanNotUndo){
+    editorState = EditorState.forceSelection(editorState, newContent.getSelectionAfter());
+  }
   return EditorState.push(editorState, newContent, 'remove-range');
 }
 
