@@ -12,7 +12,33 @@
   height: inherit;
   text-align: initial;
 }
+.public/DraftEditor/itemUl {
+  padding-right: 20px;
+  padding-left: 20px;
+  line-height: 22px;
+  margin-left: 28px;
 
+}
+.public/DraftEditor/itemUl-before {
+  counter-increment:default_global ;              /* Increment the section counter*/
+  content:counter(default_global); /* Display the counter */
+
+}
+/**/
+
+.public/DraftEditor/itemUlNumber {
+  padding-right: 20px;
+  padding-left: 20px;
+  line-height: 22px;
+}
+.public/DraftEditor/itemLiNumber:before {
+  counter-increment:default_global ;              /* Increment the section counter*/
+  content:counter(default_global) '.'; /* Display the counter */
+}
+.public/DraftEditor/itemLiNumber>div{
+  margin-top: -22px;
+  margin-left: 17px;
+}
 .public/DraftEditor/content[contenteditable="true"] {
   -webkit-user-modify: read-write-plaintext-only;
 }

@@ -138,6 +138,8 @@ class DraftEditorContents extends React.Component {
       const block = blocksAsArray[ii];
       const key = block.getKey();
       const blockType = block.getType();
+      let isLiNumberFlag=false
+      let newClassNameUl = null
 
       const customRenderer = blockRendererFn(block);
       let CustomComponent, customProps, customEditable;
@@ -226,6 +228,9 @@ class DraftEditorContents extends React.Component {
             childProps.style = blockData.get('overrideStyle').toObject();
           }
         }
+        if(blockData.get('overrideStyle') && blockData.get('overrideStyle').get('listStyle')){
+          isLiNumberFlag = blockData.get('overrideStyle').get('listStyle') === "none"
+        }
       }
       if (customEditable !== undefined) {
         childProps = {
@@ -235,12 +240,42 @@ class DraftEditorContents extends React.Component {
         };
       }
 
-      const child = React.createElement(
-        Element,
-        childProps,
-        <Component {...componentProps} />,
-      );
+      if(isList) {
+        let liChildProps={
+          className:'',
+          'data-block': true,
+          'data-editor': this.props.editorKey,
+          'data-offset-key': offsetKey,
+          key
+        }
+        if(isLiNumberFlag){
+          liChildProps.className = cx('public/DraftEditor/itemLiNumber')
+          newClassNameUl=cx('public/DraftEditor/itemUlNumber')
+          isLiNumberFlag = false
+        }
+        else{
+          newClassNameUl=cx('public/DraftEditor/itemUl')
+        }
 
+        childProps.className=newClassNameUl
+        const childui = React.createElement(
+            Element,
+            liChildProps,
+            <Component {...componentProps} />
+        );
+        child = React.createElement(
+            'ul',
+            childProps,
+            childui
+        );
+      }
+      else {
+        child = React.createElement(
+            Element,
+            childProps,
+            <Component {...componentProps} />
+        );
+      }
       processedBlocks.push({
         block: child,
         wrapperTemplate,
@@ -294,10 +329,10 @@ class DraftEditorContents extends React.Component {
 
 
     if(this.props.blockWrapperFn){
-      return <div data-contents="true" style={{paddingTop:'12px'}}>{this.props.blockWrapperFn(blocksAsArray, offsetKeys, outputBlocks)}</div>;
+      return <div data-contents="true" style={{paddingTop:'12px', counterReset:'default_global'}}>{this.props.blockWrapperFn(blocksAsArray, offsetKeys, outputBlocks)}</div>;
     }
 
-    return <div data-contents="true" style={{paddingTop:'12px'}}>{outputBlocks}</div>;
+    return <div data-contents="true" style={{paddingTop:'12px',counterReset:'default_global'}}>{outputBlocks}</div>;
   }
 }
 /**
