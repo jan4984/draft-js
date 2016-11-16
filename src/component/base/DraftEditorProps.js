@@ -35,7 +35,7 @@ export type DraftEditorProps = {
    */
   editorState: EditorState,
   onChange: (editorState: EditorState) => void,
-
+  snapBefore:string,//the dragging thing snap before this block
   placeholder?: string,
 
   // Specify whether text alignment should be forced in a direction

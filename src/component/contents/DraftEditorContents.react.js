@@ -27,6 +27,7 @@ import type {BidiDirection} from 'UnicodeBidiDirection';
 import type ContentBlock from 'ContentBlock';
 
 type Props = {
+  snapBefore:string,
   blockRendererFn: Function,
   blockStyleFn: (block: ContentBlock) => string,
   editorState: EditorState,
@@ -60,6 +61,10 @@ function onCheckListClicked(e: SyntheticMouseEvent):void {
  */
 class DraftEditorContents extends React.Component {
   shouldComponentUpdate(nextProps: Props): boolean {
+    if(this.props.snapBefore != nextProps.snapBefore){
+      //console.log('should update draft contents for snap changed:', nextProps.snapBefore);
+      return true;
+    }
     const prevEditorState = this.props.editorState;
     const nextEditorState = nextProps.editorState;
 
