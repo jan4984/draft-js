@@ -155,14 +155,26 @@ class DraftEditorLeaf extends React.Component {
     }
 
     let selClass = "span_"+((styleObj.color || "#FFFFFF").substr(1))
+    let onClick = null;
+    if(styleObj.userSelect === 'all'){
+      onClick = this._onClick.bind(this);
+    }
     return (
       <span
         data-offset-key={offsetKey}
         ref="leaf"
+        onClick={onClick}
         style={styleObj}>
         <DraftEditorTextNode selClass={selClass}>{text}</DraftEditorTextNode>
       </span>
     );
+  }
+  _onClick(){
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    const range = document.createRange();
+    range.selectNode(this.refs.leaf);
+    sel.addRange(range);
   }
 }
 
