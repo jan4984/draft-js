@@ -613,7 +613,8 @@ function getInlineStyleForCollapsedSelection(
   }
 
   // Otherwise, look upward in the document to find the closest character.
-  return lookUpwardForInlineStyle(content, startKey);
+  //jan4984:we need the 'unstyled' under controlled
+  return OrderedSet();//lookUpwardForInlineStyle(content, startKey);
 }
 
 function getInlineStyleForNonCollapsedSelection(
