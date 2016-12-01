@@ -40,6 +40,7 @@ type Props = {
   isLast: boolean,
 
   offsetKey: string,
+  isEmpty:boolean,
 
   // The current `SelectionState`, used to
   selection: SelectionState,
@@ -98,6 +99,8 @@ class DraftEditorLeaf extends React.Component {
       targetNode = child;
     } else if (child.tagName === 'BR') {
       targetNode = node;
+    }else if(child.tagName === 'SPAN' && child.classList.contains('last')){
+      targetNode = node;
     } else {
       targetNode = child.firstChild;
     }
@@ -109,6 +112,7 @@ class DraftEditorLeaf extends React.Component {
     return (
       ReactDOM.findDOMNode(this.refs.leaf).textContent !== nextProps.text ||
       nextProps.styleSet !== this.props.styleSet ||
+      nextProps.isEmpty != this.props.isEmpty ||
       nextProps.forceSelection
     );
   }
@@ -165,7 +169,7 @@ class DraftEditorLeaf extends React.Component {
         ref="leaf"
         onClick={onClick}
         style={styleObj}>
-        <DraftEditorTextNode selClass={selClass}>{text}</DraftEditorTextNode>
+        <DraftEditorTextNode isEmpty={this.props.isEmpty&&this.props.isLast} selClass={selClass}>{text}</DraftEditorTextNode>
       </span>
     );
   }

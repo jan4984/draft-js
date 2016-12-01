@@ -142,6 +142,7 @@ class DraftEditorBlock extends React.Component {
             offsetKey={offsetKey}
             blockKey={blockKey}
             start={start}
+            isEmpty={text.length == 0}
             selection={hasSelection ? this.props.selection : undefined}
             forceSelection={this.props.forceSelection}
             text={text.slice(start, end)}

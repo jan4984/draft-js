@@ -19,7 +19,7 @@ const UserAgent = require('UserAgent');
 
 // In IE, spans with <br> tags render as two newlines. By rendering a span
 // with only a newline character, we can be sure to render a single line.
-const useNewlineChar = UserAgent.isBrowser('IE <= 11');
+const useNewlineChar = true;//UserAgent.isBrowser('IE <= 11');
 
 /**
  * Check whether the node should be considered a newline.
@@ -47,9 +47,15 @@ const NEWLINE_B = useNewlineChar ?
   <span key="B" data-text="true">{'\n'}</span> :
   <br key="B" data-text="true" />;
 
+const SOFT_BREAK_CHAR = String.fromCharCode(0xf120);
+const NEWLINE_A_EMPTY = <span className="last" key="A" data-text="true"></span>;
+
+const NEWLINE_B_EMPTY = <span className="last" key="B" data-text="true"></span>;
+
 type Props = {
   children: string,
   selClass: string,
+  isEmpty:bool,
 };
 
 /**
@@ -68,6 +74,8 @@ class DraftEditorTextNode extends React.Component {
   }
 
   shouldComponentUpdate(nextProps: Props): boolean {
+    if(this.props.isEmpyt != nextProps.isEmpty)
+      return true;
     const node = ReactDOM.findDOMNode(this);
     const shouldBeNewline = nextProps.children === '';
     if (shouldBeNewline) {
@@ -87,10 +95,19 @@ class DraftEditorTextNode extends React.Component {
 
   render(): React.Element<any> {
     if (this.props.children === '') {
-      return this._forceFlag ? NEWLINE_A : NEWLINE_B;
+      if(this.props.isEmpty){
+        return this._forceFlag ? NEWLINE_A_EMPTY : NEWLINE_B_EMPTY;
+      }else {
+        return this._forceFlag ? NEWLINE_A : NEWLINE_B;
+      }
+    }
+
+    let className = this.props.selClass;
+    if(this.props.isEmpty){
+      className += ' last';
     }
     return (
-      <span className={this.props.selClass} key={this._forceFlag ? 'A' : 'B'} data-text="true" >
+      <span className={className} key={this._forceFlag ? 'A' : 'B'} data-text="true" >
           {this.props.children}
       </span>
     );
