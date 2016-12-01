@@ -275,6 +275,7 @@ class DraftEditor extends React.Component {
             suppressContentEditableWarning
             tabIndex={this.props.tabIndex}>
             <DraftEditorContents
+                readOnly={readOnly}
               blockRenderMap={this.props.blockRenderMap}
               checkListClickedFn={this.props.checkListClickedFn}
               blockRendererFn={this.props.blockRendererFn}

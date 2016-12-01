@@ -41,7 +41,6 @@ type Props = {
 
   offsetKey: string,
   isEmpty:boolean,
-
   // The current `SelectionState`, used to
   selection: SelectionState,
 

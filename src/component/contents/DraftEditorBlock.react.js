@@ -48,6 +48,7 @@ type Props = {
   forceSelection: boolean,
   direction: BidiDirection,
   blockProps?: Object,
+  readOnly:boolean,
   startIndent?: boolean,
   blockStyleFn: Function,
 };
@@ -61,6 +62,7 @@ type Props = {
 class DraftEditorBlock extends React.Component {
   shouldComponentUpdate(nextProps: Props): boolean {
     return (
+        this.props.readOnly != nextProps.readOnly ||
       this.props.block !== nextProps.block ||
       this.props.tree !== nextProps.tree ||
       this.props.direction !== nextProps.direction ||
@@ -142,7 +144,7 @@ class DraftEditorBlock extends React.Component {
             offsetKey={offsetKey}
             blockKey={blockKey}
             start={start}
-            isEmpty={text.length == 0}
+            isEmpty={text.length == 0 && !this.props.readOnly}
             selection={hasSelection ? this.props.selection : undefined}
             forceSelection={this.props.forceSelection}
             text={text.slice(start, end)}

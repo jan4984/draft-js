@@ -31,6 +31,7 @@ type Props = {
   blockRendererFn: Function,
   blockStyleFn: (block: ContentBlock) => string,
   editorState: EditorState,
+  readOnly:bool,
 };
 
 type CheckListClickBinder = {
@@ -63,6 +64,9 @@ class DraftEditorContents extends React.Component {
   shouldComponentUpdate(nextProps: Props): boolean {
     if(this.props.snapBefore != nextProps.snapBefore){
       //console.log('should update draft contents for snap changed:', nextProps.snapBefore);
+      return true;
+    }
+    if(this.props.readOnly != nextProps.readOnly){
       return true;
     }
     const prevEditorState = this.props.editorState;
@@ -161,6 +165,7 @@ class DraftEditorContents extends React.Component {
       const componentProps = {
         contentState: content,
         block,
+        readOnly:this.props.readOnly,
         blockProps: customProps,
         customStyleMap,
         customStyleFn,
