@@ -267,7 +267,8 @@ class DraftEditorContents extends React.Component {
           newClassNameUl=cx('public/DraftEditor/itemUl')
         }
 
-        childProps.className=newClassNameUl
+        childProps.className=newClassNameUl;
+        componentProps.textAlign = liChildProps.style ? liChildProps.style.textAlign : '';
         const childui = React.createElement(
             Element,
             liChildProps,
@@ -280,6 +281,7 @@ class DraftEditorContents extends React.Component {
         );
       }
       else {
+        componentProps.textAlign = childProps.style ? childProps.style.textAlign : '';
         child = React.createElement(
             Element,
             childProps,

@@ -51,6 +51,7 @@ type Props = {
   readOnly:boolean,
   startIndent?: boolean,
   blockStyleFn: Function,
+  textAlign:string,
 };
 
 /**
@@ -62,6 +63,7 @@ type Props = {
 class DraftEditorBlock extends React.Component {
   shouldComponentUpdate(nextProps: Props): boolean {
     return (
+        this.props.textAlign != nextProps.textAlign ||
         this.props.readOnly != nextProps.readOnly ||
       this.props.block !== nextProps.block ||
       this.props.tree !== nextProps.tree ||
@@ -144,6 +146,7 @@ class DraftEditorBlock extends React.Component {
             offsetKey={offsetKey}
             blockKey={blockKey}
             start={start}
+            textAlign={this.props.textAlign}
             isEmpty={text.length == 0 && !this.props.readOnly}
             selection={hasSelection ? this.props.selection : undefined}
             forceSelection={this.props.forceSelection}

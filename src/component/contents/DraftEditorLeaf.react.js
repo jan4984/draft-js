@@ -38,6 +38,7 @@ type Props = {
 
   // Whether this leaf is the last in its block. Used for a DOM hack.
   isLast: boolean,
+  textAlign:string,
 
   offsetKey: string,
   isEmpty:boolean,
@@ -112,6 +113,7 @@ class DraftEditorLeaf extends React.Component {
       ReactDOM.findDOMNode(this.refs.leaf).textContent !== nextProps.text ||
       nextProps.styleSet !== this.props.styleSet ||
       nextProps.isEmpty != this.props.isEmpty ||
+      nextProps.textAlign != this.props.textAlign  ||
       nextProps.forceSelection
     );
   }
@@ -164,7 +166,9 @@ class DraftEditorLeaf extends React.Component {
     }
     if(this.props.isEmpty){
       //for center aligned block cursor position
-      return <div data-offset-key={offsetKey} style={{margin:"auto",width:"11px"}}><span
+      //TODO:right aligned
+      const style = this.props.textAlign === 'center' ? {margin:"auto",width:"11px"} : {};
+      return <div data-offset-key={offsetKey} style={style}><span
           data-offset-key={offsetKey}
           ref="leaf"
           onClick={onClick}
