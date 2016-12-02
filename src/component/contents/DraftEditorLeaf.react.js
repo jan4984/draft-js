@@ -162,13 +162,23 @@ class DraftEditorLeaf extends React.Component {
     if(styleObj.userSelect === 'all'){
       onClick = this._onClick.bind(this);
     }
+    if(this.props.isEmpty){
+      //for center aligned block cursor position
+      return <div data-offset-key={offsetKey} style={{margin:"auto",width:"11px"}}><span
+          data-offset-key={offsetKey}
+          ref="leaf"
+          onClick={onClick}
+          style={styleObj}>
+        <DraftEditorTextNode isEmpty={true} selClass={selClass}>{text}</DraftEditorTextNode>
+      </span></div>
+    }
     return (
-      <span
-        data-offset-key={offsetKey}
-        ref="leaf"
-        onClick={onClick}
-        style={styleObj}>
-        <DraftEditorTextNode isEmpty={this.props.isEmpty&&this.props.isLast} selClass={selClass}>{text}</DraftEditorTextNode>
+        <span
+            data-offset-key={offsetKey}
+            ref="leaf"
+            onClick={onClick}
+            style={styleObj}>
+        <DraftEditorTextNode isEmpty={false} selClass={selClass}>{text}</DraftEditorTextNode>
       </span>
     );
   }
