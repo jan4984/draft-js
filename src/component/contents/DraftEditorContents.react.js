@@ -200,7 +200,9 @@ class DraftEditorContents extends React.Component {
       }*/
       const blockData = block.getData();
       const isList = blockData && blockData.get('overrideStyle') && blockData.get('overrideStyle').has('listStyle');
-      const isCheckList = isList && blockData.get('overrideStyle').get('listStyle').startsWith('url');
+      const isCheckList = isList &&blockData.get('overrideStyle') && blockData.get('overrideStyle').has('background')
+          && blockData.get('overrideStyle').get('background').startsWith('url')
+          && blockData.get('overrideStyle').get('listStyle')=='none'
       const Element = isList
           ? 'li'
           : (configForType.element || blockRenderMap.get('unstyled').element);
@@ -239,7 +241,7 @@ class DraftEditorContents extends React.Component {
           }
         }
         if(blockData.get('overrideStyle') && blockData.get('overrideStyle').get('listStyle')){
-          isLiNumberFlag = blockData.get('overrideStyle').get('listStyle') === "none"
+          isLiNumberFlag = blockData.get('overrideStyle').get('listStyle') === "none"&&!blockData.get('overrideStyle').has('background')
         }
       }
       if (customEditable !== undefined) {
@@ -249,10 +251,12 @@ class DraftEditorContents extends React.Component {
           suppressContentEditableWarning: true,
         };
       }
-
       if(isList) {
+        const liClassName=isCheckList&&
+              blockData.get('overrideStyle').get('background').indexOf('"check.png"') >= 0?
+              cx('public/DraftEditor/itemCheckLi'):'' ;
         let liChildProps={
-          className:'',
+          className:liClassName,
           'data-block': true,
           'data-editor': this.props.editorKey,
           'data-offset-key': offsetKey,

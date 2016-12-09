@@ -26,6 +26,10 @@
 }
 /**/
 
+.public/DraftEditor/itemCheckLi {
+  opacity: 0.5;
+}
+
 .public/DraftEditor/itemUlNumber {
   padding-right: 20px;
   padding-left: 20px;
@@ -34,6 +38,7 @@
 .public/DraftEditor/itemLiNumber:before {
   counter-increment:default_global ;              /* Increment the section counter*/
   content:counter(default_global) '.'; /* Display the counter */
+  text-align: left;
 }
 .public/DraftEditor/itemLiNumber>div{
   margin-top: -22px;
