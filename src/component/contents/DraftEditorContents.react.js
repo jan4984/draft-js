@@ -163,6 +163,7 @@ class DraftEditorContents extends React.Component {
       const direction = "NEUTRAL";
       const offsetKey = DraftOffsetKey.encode(key, 0, 0);
       const componentProps = {
+        textAlign:'',
         contentState: content,
         block,
         readOnly:this.props.readOnly,

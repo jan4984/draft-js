@@ -103,7 +103,7 @@ function getDraftEditorSelectionWithNodes(
     if (anchorNode === focusNode && anchorOffset === focusOffset) {
       var fc = anchorNode.firstChild;
       needsRecovery = !!fc &&
-          !(fc.nodeName === 'BR' || (fc.nodeName !== 'SPAN' && fc.classList.contains('last')));
+          !(fc.nodeName === 'BR' || (fc.nodeName === 'SPAN' && fc.classList.contains('last')));//flow not know classList?
     }
   }
 
