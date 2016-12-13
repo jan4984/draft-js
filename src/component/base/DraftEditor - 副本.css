@@ -25,20 +25,18 @@
 
 }
 /**/
-
-.public/DraftEditor/itemCheckLi {
+.public/DraftEditor/checkLi{
   opacity: 0.5;
 }
-
 .public/DraftEditor/itemUlNumber {
   padding-right: 20px;
   padding-left: 20px;
+  line-height: 22px;
 }
 .public/DraftEditor/itemLiNumber:before {
   counter-increment:default_global ;              /* Increment the section counter*/
   content:counter(default_global) '.'; /* Display the counter */
   text-align: left;
-  display: block;
 }
 .public/DraftEditor/itemLiNumber>div{
   margin-top: -22px;
@@ -71,6 +69,7 @@
   padding-right: 20px;
   padding-left: 20px;
   line-height: 22px;
+
 }
 
 .DraftEditor/alignLeft .public/DraftStyleDefault/block {
