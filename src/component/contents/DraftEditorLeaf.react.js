@@ -159,7 +159,7 @@ class DraftEditorLeaf extends React.Component {
       styleObj = Object.assign(styleObj, newStyles);
     }
 
-    let selClass = "span_"+((styleObj.color || "#FFFFFF").substr(1))
+    let selClass = "span_"+((styleObj.color || "#000000").substr(1))
     let onClick = null;
     if(styleObj.userSelect === 'all'){
       onClick = this._onClick.bind(this);
