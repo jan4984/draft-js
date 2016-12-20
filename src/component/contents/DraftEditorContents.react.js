@@ -252,6 +252,7 @@ class DraftEditorContents extends React.Component {
           suppressContentEditableWarning: true,
         };
       }
+      const UlStyle=(blockData.get('UlStyle')&&blockData.get('UlStyle').toObject())||{};
       if(isList) {
         const liClassName=isCheckList&&
               blockData.get('overrideStyle').get('background').indexOf('"check.png"') >= 0?
@@ -264,8 +265,8 @@ class DraftEditorContents extends React.Component {
           key
         }
         if(isLiNumberFlag){
-          liChildProps.className = cx('public/DraftEditor/itemLiNumber')
-          newClassNameUl=cx('public/DraftEditor/itemUlNumber')
+          liChildProps.className = cx('public/DraftEditor/itemLiNumber');
+          newClassNameUl=cx('public/DraftEditor/itemUlNumber');
           isLiNumberFlag = false
         }
         else{
@@ -284,9 +285,16 @@ class DraftEditorContents extends React.Component {
             childProps,
             childui
         );
+
+        child = React.createElement(
+            'div',
+            {style:UlStyle},
+            child
+        );
       }
       else {
         componentProps.textAlign = childProps.style ? childProps.style.textAlign : '';
+        childProps.style=Object.assign({},childProps.style, UlStyle);
         child = React.createElement(
             Element,
             childProps,
