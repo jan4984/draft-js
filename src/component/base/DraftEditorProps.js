@@ -61,6 +61,7 @@ export type DraftEditorProps = {
   // temporarily disabling edit behavior or allowing `DraftEditor` rendering
   // to be used for consumption purposes.
   readOnly?: boolean,
+  hideLR?:boolean,
 
   // Note: spellcheck is always disabled for IE. If enabled in Safari, OSX
   // autocorrect is enabled as well.
