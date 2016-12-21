@@ -188,10 +188,12 @@ class DraftEditorLeaf extends React.Component {
   }
   _onClick(){
     const sel = window.getSelection();
-    sel.removeAllRanges();
-    const range = document.createRange();
-    range.selectNode(this.refs.leaf);
-    sel.addRange(range);
+    if (sel.isCollapsed) {
+      sel.removeAllRanges();
+      const range = document.createRange();
+      range.selectNode(this.refs.leaf);
+      sel.addRange(range);
+    }
   }
 }
 
