@@ -255,7 +255,7 @@ class DraftEditorContents extends React.Component {
       const UlStyle=(blockData.get('UlStyle')&&blockData.get('UlStyle').toObject())||{};
       if(isList) {
         const liClassName=isCheckList&&
-              blockData.get('overrideStyle').get('background').indexOf('"check.png"') >= 0?
+              blockData.get('overrideStyle').get('background').indexOf('square_checkbox.svg') >= 0?
               cx('public/DraftEditor/itemCheckLi'):'' ;
         let liChildProps={
           className:liClassName,
