@@ -67,6 +67,9 @@ class DraftEditorBlock extends React.Component {
         this.props.readOnly != nextProps.readOnly ||
       this.props.block !== nextProps.block ||
       this.props.tree !== nextProps.tree ||
+      (
+          this.props.selection.isCollapsed() && nextProps.selection.isCollapsed() &&
+          (this.props.selection.getStartKey()===this.props.block.getKey()) || nextProps.selection.getStartKey() === this.props.block.getKey()) ||
       this.props.direction !== nextProps.direction ||
       (
         isBlockOnSelectionEdge(
@@ -147,6 +150,8 @@ class DraftEditorBlock extends React.Component {
             blockKey={blockKey}
             start={start}
             textAlign={this.props.textAlign}
+            //if caret in current empty line, a 'android center handle' may overlay the caret
+            isEditing={this.props.selection.isCollapsed() && this.props.selection.getStartKey() === blockKey}
             isEmpty={text.length == 0 && !this.props.readOnly}
             selection={hasSelection ? this.props.selection : undefined}
             forceSelection={this.props.forceSelection}

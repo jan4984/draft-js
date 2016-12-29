@@ -42,6 +42,7 @@ type Props = {
 
   offsetKey: string,
   isEmpty:boolean,
+  isEditing:boolean,
   // The current `SelectionState`, used to
   selection: SelectionState,
 
@@ -173,7 +174,7 @@ class DraftEditorLeaf extends React.Component {
           ref="leaf"
           onClick={onClick}
           style={styleObj}>
-        <DraftEditorTextNode isEmpty={true} selClass={selClass}>{text}</DraftEditorTextNode>
+        <DraftEditorTextNode isEmpty={true} selClass={selClass}>{this.props.isEditing?'\u200b':''}</DraftEditorTextNode>
       </span></div>
     }
     return (
