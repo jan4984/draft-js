@@ -162,7 +162,7 @@ class DraftEditorLeaf extends React.Component {
     let selClass = "span_"+((styleObj.color || "#000000").substr(1))
     let onClick = null;
     if(styleObj.userSelect === 'all'){
-      onClick = this._onClick.bind(this);
+      onClick = this._onClick.bind(this,styleObj.defaultData);
     }
     if(this.props.isEmpty){
       //for center aligned block cursor position
@@ -186,9 +186,9 @@ class DraftEditorLeaf extends React.Component {
       </span>
     );
   }
-  _onClick(){
+  _onClick(defaultData){
     const sel = window.getSelection();
-    if (sel.isCollapsed) {
+    if (sel.isCollapsed && defaultData && defaultData.indexOf(sel.focusNode.data)!=-1) {
       sel.removeAllRanges();
       const range = document.createRange();
       range.selectNode(this.refs.leaf);
