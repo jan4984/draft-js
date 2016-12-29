@@ -62,14 +62,17 @@ type Props = {
  */
 class DraftEditorBlock extends React.Component {
   shouldComponentUpdate(nextProps: Props): boolean {
+    var updateTailCR = (cp,np)=>{
+      var curEditing = cp.selection.getHasFocus() && cp.selection.isCollapsed() && cp.selection.getStartKey() === cp.block.getKey();
+      var nextEditing = np.selection.getHasFocus()  && np.selection.isCollapsed() && np.selection.getStartKey() === np.block.getKey();
+      return curEditing != nextEditing;
+    };
     return (
         this.props.textAlign != nextProps.textAlign ||
         this.props.readOnly != nextProps.readOnly ||
       this.props.block !== nextProps.block ||
       this.props.tree !== nextProps.tree ||
-      (
-          this.props.selection.isCollapsed() && nextProps.selection.isCollapsed() &&
-          (this.props.selection.getStartKey()===this.props.block.getKey()) || nextProps.selection.getStartKey() === this.props.block.getKey()) ||
+      updateTailCR(this.props, nextProps)||
       this.props.direction !== nextProps.direction ||
       (
         isBlockOnSelectionEdge(
@@ -151,7 +154,7 @@ class DraftEditorBlock extends React.Component {
             start={start}
             textAlign={this.props.textAlign}
             //if caret in current empty line, a 'android center handle' may overlay the caret
-            isEditing={this.props.selection.isCollapsed() && this.props.selection.getStartKey() === blockKey}
+            isEditing={this.props.selection.getHasFocus() && this.props.selection.isCollapsed() && this.props.selection.getStartKey() === blockKey}
             isEmpty={text.length == 0 && !this.props.readOnly}
             selection={hasSelection ? this.props.selection : undefined}
             forceSelection={this.props.forceSelection}
