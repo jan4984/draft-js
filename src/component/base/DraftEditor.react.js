@@ -247,6 +247,10 @@ class DraftEditor extends React.Component {
             aria-owns={readOnly ? null : this.props.ariaOwneeID}
             className={cx('public/DraftEditor/content')}
             contentEditable={!readOnly}
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
             data-testid={this.props.webDriverTestID}
             onBeforeInput={this._onBeforeInput}
             onBlur={this._onBlur}
