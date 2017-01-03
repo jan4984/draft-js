@@ -64,6 +64,9 @@ function editOnInput(): void {
   if (domText.endsWith(DOUBLE_NEWLINE)) {
     domText = domText.slice(0, -1);
   }
+  if(domText.endsWith('\u200b') || domText.startsWith('\u200b')){
+      domText = domText.replace('\u200b','');
+  }
 
   // No change -- the DOM is up to date. Nothing to do here.
   if (domText === modelText) {
