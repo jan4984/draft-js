@@ -42,8 +42,9 @@ type CheckListClickBinder = {
 function onCheckListClicked(e: SyntheticMouseEvent):void {
   const li = this.THIS.refs[this.ref];
   if (li && li.children[0] && li.children[0].children[0]) {
-    const childStartAt = ReactDOM.findDOMNode(li.children[0].children[0]).offsetLeft;
-    if (e.pageX < childStartAt) {
+    const childStartAtX=li.children[0].getBoundingClientRect().left-20;
+    const childStartAtY=li.children[0].getBoundingClientRect().top+20;
+    if (e.pageX < childStartAtX && e.pageY< childStartAtY) {
       this.THIS.props.checkListClickedFn(this.block, e);
     }
   } else {
@@ -255,7 +256,7 @@ class DraftEditorContents extends React.Component {
       const UlStyle=(blockData.get('UlStyle')&&blockData.get('UlStyle').toObject())||{};
       if(isList) {
         const liClassName=isCheckList&&
-              blockData.get('overrideStyle').get('background').indexOf('square_checkbox.svg') >= 0?
+              blockData.get('overrideStyle').get('background').indexOf('square_checkbox') >= 0?
               cx('public/DraftEditor/itemCheckLi'):'' ;
         let liChildProps={
           className:liClassName,
