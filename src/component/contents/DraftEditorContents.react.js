@@ -39,11 +39,36 @@ type CheckListClickBinder = {
   THIS: DraftEditorContents;
   block: ContentBlock;
 }
+
+
+function findPosX(obj) {
+  let curleft = 0;
+  if (obj.offsetParent) {
+    while (obj.offsetParent) {
+      curleft += obj.offsetLeft;
+      obj = obj.offsetParent;
+    }
+  } else if (obj.x) curleft += obj.x;
+  return curleft;
+}
+
+function findPosY(obj) {
+  let curtop = 0;
+  if (obj.offsetParent) {
+    while (obj.offsetParent) {
+      curtop += obj.offsetTop;
+      obj = obj.offsetParent;
+    }
+  } else if (obj.y) curtop += obj.y;
+  return curtop;
+}
+
+
 function onCheckListClicked(e: SyntheticMouseEvent):void {
   const li = this.THIS.refs[this.ref];
   if (li && li.children[0] && li.children[0].children[0]) {
-    const childStartAtX=li.children[0].getBoundingClientRect().left-20;
-    const childStartAtY=li.children[0].getBoundingClientRect().top+20;
+    const childStartAtX=findPosX(li.children[0])-10;
+    const childStartAtY=findPosY(li.children[0])+28;
     if (e.pageX < childStartAtX && e.pageY< childStartAtY) {
       this.THIS.props.checkListClickedFn(this.block, e);
     }
