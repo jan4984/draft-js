@@ -10,7 +10,6 @@
 .DraftEditor/editorContainer,
 .public/DraftEditor/content {
   height: inherit;
-  text-align: initial;
 }
 .public/DraftEditor/itemUl {
   padding-right: 20px;
