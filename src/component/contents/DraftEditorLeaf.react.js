@@ -190,6 +190,7 @@ class DraftEditorLeaf extends React.Component {
   _onClick(defaultData){
     const sel = window.getSelection();
     if (sel.isCollapsed && defaultData && defaultData.indexOf(sel.focusNode.data)!=-1) {
+      window.EditTools.showInputMethod();
       sel.removeAllRanges();
       const range = document.createRange();
       range.selectNode(this.refs.leaf);
