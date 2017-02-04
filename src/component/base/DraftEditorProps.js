@@ -105,6 +105,7 @@ export type DraftEditorProps = {
   handleBeforeInput?: (chars: string) => DraftHandleValue,
 
   handlePastedText?: (text: string, html?: string) => DraftHandleValue,
+  onEditPaste?: () => void,
 
   handlePastedFiles?: (files: Array<Blob>) => DraftHandleValue,
 
