@@ -500,11 +500,20 @@ function updateSelection(
   selection: SelectionState,
   forceSelection: boolean
 ): EditorState {
+  var overrideStyle = null;
+  var currentSelection = editorState.getSelection();
+  if(selection.isCollapsed()
+      && currentSelection.isCollapsed()
+      && selection.getStartKey() == currentSelection.getStartKey()
+      && selection.getStartOffset() == currentSelection.getStartOffset()
+  ){
+    overrideStyle = editorState.getInlineStyleOverride();
+  }
   return EditorState.set(editorState, {
     selection,
     forceSelection,
     nativelyRenderedContent: null,
-    inlineStyleOverride: null,
+    inlineStyleOverride: overrideStyle,
   });
 }
 
