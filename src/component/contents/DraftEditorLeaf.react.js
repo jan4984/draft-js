@@ -174,7 +174,7 @@ class DraftEditorLeaf extends React.Component {
           ref="leaf"
           onClick={onClick}
           style={styleObj}>
-        <DraftEditorTextNode isEmpty={true} selClass={selClass}>{this.props.isEditing?'\u200b':''}</DraftEditorTextNode>
+        <DraftEditorTextNode isEmpty={true} selClass={selClass}>{this.props.isEditing?'\u200b':'\u200b'}</DraftEditorTextNode>
       </span></div>
     }
     return (
