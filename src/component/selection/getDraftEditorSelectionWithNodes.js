@@ -46,6 +46,10 @@ function getDraftEditorSelectionWithNodes(
   // Find the nearest offset-aware elements and use the
   // offset values supplied by the selection range.
   if (anchorIsTextNode && focusIsTextNode) {
+    if(anchorNode.textContent=='\u200b')
+      anchorOffset = 0;
+    if(focusNode.textContent=='\u200b')
+      focusOffset = 0;
     return {
       selectionState: getUpdatedSelectionState(
         editorState,
@@ -61,6 +65,7 @@ function getDraftEditorSelectionWithNodes(
   var anchorPoint = null;
   var focusPoint = null;
   var needsRecovery = true;
+  var emptyPlaceHolder = false;
 
   // An element is selected. Convert this selection range into leaf offset
   // keys and offset values for consumption at the component level. This
