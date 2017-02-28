@@ -223,7 +223,15 @@ var DraftModifier = {
     return modifyBlockForContentState(
       contentState,
       selectionState,
-      (block) => block.merge({data: blockData})
+      (block) => {
+        if(block.getType() === 'atomic'){
+          if(blockData.get('overrideStyle')){
+            //atomic block not overridestyle
+            return block;
+          }
+        }
+        return block.merge({data: blockData})
+      }
     );
   },
 
@@ -235,7 +243,15 @@ var DraftModifier = {
     return modifyBlockForContentState(
       contentState,
       selectionState,
-      (block) => block.merge({data: block.getData().merge(blockData)})
+      (block) => {
+        if(block.getType() === 'atomic'){
+          if(blockData.get('overrideStyle')){
+            //atomic block not overridestyle
+            return block;
+          }
+        }
+        return block.merge({data: block.getData().merge(blockData)})
+      }
     );
   },
 
