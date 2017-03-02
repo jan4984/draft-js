@@ -225,7 +225,7 @@ class DraftEditorContents extends React.Component {
           getListItemClasses(blockType, depth, shouldResetCount, direction)
         );
       }*/
-      const blockData = block.getData();
+      let blockData = block.getData();
       const isList = blockData && blockData.get('overrideStyle') && blockData.get('overrideStyle').has('listStyle');
       const isCheckList = isList &&blockData.get('overrideStyle') && blockData.get('overrideStyle').has('background')
           && blockData.get('overrideStyle').get('background').startsWith('url')
@@ -254,6 +254,22 @@ class DraftEditorContents extends React.Component {
         childProps.ref = 'li'+ii;
         const binder:CheckListClickBinder = {block, THIS:this, ref:'li'+ii}
         childProps.onClickCapture = onCheckListClicked.bind(binder);
+      }
+      if(isCheckList){
+        const cssImgUrlRegex = new RegExp(/url\(([^)]+)\)/);
+        let style=blockData.get('overrideStyle').toObject()
+        const props = Object.keys(style);
+        props.forEach(prop=> {
+          const m = cssImgUrlRegex.exec(style[prop]);
+          if (m && m[0] && m[1]) {
+            const attach = (m[1].replace(/'/g, "").replace(/"/g,''));
+            const bgUrl = window.EditTools.getSvgUrl(attach)
+            if(style[prop]) {//for flow check;
+              style[prop] = style[prop].replace(m[0], 'url(' + bgUrl + ')');
+            }
+          }
+        });
+        blockData = blockData.merge({overrideStyle:style});
       }
       if(blockData){
         if(blockData.get('style')){
