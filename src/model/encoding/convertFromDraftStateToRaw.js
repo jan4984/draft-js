@@ -46,7 +46,7 @@ function convertFromDraftStateToRaw(
       text: block.getText(),
       type: block.getType(),
       depth: block.getDepth(),
-      inlineStyleRanges: encodeInlineStyleRanges(block),
+      inlineStyleRanges: encodeInlineStyleRanges(block).sort((a,b)=>a.style.localeCompare(b.style)),
       entityRanges: encodeEntityRanges(block, entityStorageMap),
       data: block.getData().toObject(),
     });
