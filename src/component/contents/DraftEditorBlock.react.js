@@ -156,6 +156,7 @@ class DraftEditorBlock extends React.Component {
             //if caret in current empty line, a 'android center handle' may overlay the caret
             isEditing={this.props.selection.getHasFocus() && this.props.selection.isCollapsed() && this.props.selection.getStartKey() === blockKey}
             isEmpty={text.length == 0 && !this.props.readOnly}
+            readOnly={this.props.readOnly}
             selection={hasSelection ? this.props.selection : undefined}
             forceSelection={this.props.forceSelection}
             text={text.slice(start, end)}
