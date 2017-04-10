@@ -154,7 +154,7 @@ class DraftEditor extends React.Component {
     this._onMouseDown = this._buildHandler('onMouseDown');
     this._onMouseUp = this._buildHandler('onMouseUp');
     var originOnPaste = this._buildHandler('onPaste');
-    this._onPaste = ()=>{originOnPaste();this.props.onEditPaste && this.props.onEditPaste();};
+    this._onPaste = (e)=>{originOnPaste(e);this.props.onEditPaste && this.props.onEditPaste();};
     this._onSelect = this._buildHandler('onSelect');
 
     // Manual binding for public and internal methods.

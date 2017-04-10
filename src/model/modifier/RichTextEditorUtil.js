@@ -323,7 +323,7 @@ const RichTextEditorUtil = {
         editorState,
         currentStyle.has(inlineStyle)
           ? currentStyle.remove(inlineStyle)
-          : currentStyle.add(inlineStyle),
+          : currentStyle.add(inlineStyle)
       );
     }
 
